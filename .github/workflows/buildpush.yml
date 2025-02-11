@@ -28,7 +28,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Determine Changed Files
+        id: changes
+        run: |
+          echo "Checking for changes in ${{ matrix.service }}..."
+          if git diff --name-only ${{ github.sha }} ${{ github.sha }}^ | grep "^${{ matrix.service }}/"; then
+            echo "changes_detected=true" >> $GITHUB_ENV
+          else
+            echo "changes_detected=false" >> $GITHUB_ENV
+          fi
+
       - name: Build and Push ${{ matrix.service }} Image
+        if: env.changes_detected == 'true'
         uses: docker/build-push-action@v5
         with:
           context: ./${{ matrix.service }}               # Navigate to each service directory

@@ -5,35 +5,33 @@ import {
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import axios from "axios";
-import Clock from 'react-clock';  // Import the react-clock package
-import 'react-clock/dist/Clock.css';  // Import the default clock styles
+import Clock from 'react-clock';
+import 'react-clock/dist/Clock.css';
 
 import './App.css';
 
 const queryClient = new QueryClient();
 
-function CurrentTime(props) {
+// Fetch the API URLs from environment variables
+const GOLANG_API_URL = import.meta.env.VITE_API_GOLANG;
+const NODE_API_URL = import.meta.env.VITE_API_NODE;
+
+function CurrentTime({ apiUrl, apiName }) {
   const { isLoading, error, data, isFetching } = useQuery({
-    queryKey: [props.api],
-    queryFn: () =>
-      axios
-        .get(`${props.api}`)
-        .then((res) => res.data),
+    queryKey: [apiUrl],
+    queryFn: () => axios.get(apiUrl).then((res) => res.data),
   });
 
-  if (isLoading) return `Loading ${props.api}...`;
-
+  if (isLoading) return `Loading ${apiName}...`;
   if (error) return "An error has occurred: " + error.message;
 
-  // Convert fetched time to Date object
   const fetchedTime = new Date(data.now);
 
   return (
     <div className="App">
       <p>---</p>
-      <p>API: {data.api}</p>
+      <p>API: {apiName}</p>
       <p>Time from DB:</p>
-      {/* Display the fetched time in a clock */}
       <Clock 
         value={fetchedTime} 
         renderNumbers={true} 
@@ -47,9 +45,9 @@ function CurrentTime(props) {
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <h1>This is my first golang api with react js as frontend</h1>
-      <CurrentTime api="/api/golang/" />
-      <CurrentTime api="/api/node/" />
+      <h1>This is my first Golang API with React JS as frontend</h1>
+      <CurrentTime apiUrl={GOLANG_API_URL} apiName="Golang API" />
+      <CurrentTime apiUrl={NODE_API_URL} apiName="Node API" />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
