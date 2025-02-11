@@ -39,3 +39,22 @@
 .read-the-docs {
   color: #888;
 }
+
+
+.clock {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #4caf50;
+  margin: 10px 0;
+}
+
+
+.custom-clock {
+  width: 200px;
+  height: 200px;
+  margin: 10px auto;
+}
+
+.App p {
+  font-size: 1.2rem;
+}
