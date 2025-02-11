@@ -8,6 +8,9 @@ databaseUrl =
 
 const pool = new Pool({
   connectionString: databaseUrl,
+  ssl: {
+    rejectUnauthorized: false  // This allows self-signed certificates (common for managed DBs)
+  }
 });
 
 // the pool will emit an error on behalf of any idle clients
